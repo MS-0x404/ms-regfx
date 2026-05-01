@@ -57,10 +57,13 @@ if __name__ == "__main__":
     if len(sys.argv) >= 3:
         try:
             raw = open(sys.argv[1], "rb").read()
+            formato = raw[:4]
+            if formato != b'regf':
+                print(f"Error: Unsupported format {formato}!")
+                sys.exit(1)
         except FileNotFoundError:
             print("File not found!")
             sys.exit(1)
-        formato = raw[:4]
         header = leggi_header(raw)
         prefix = leggi_nk(raw, header["start_cell"])["named"]
         recursive = "--recursive" in sys.argv or "-r" in sys.argv
@@ -88,9 +91,7 @@ if __name__ == "__main__":
     else:
         print("Error: No arguments provided. Use --help to see available options.")
         sys.exit(1)
-    if formato == b'regf':
-        main(raw, header, path, recursive, reglista)
-    else:
-        print(f"Error: Unsupported format {formato}!")
-        sys.exit(1)
+    
+    main(raw, header, path, recursive, reglista)
+    
 

@@ -6,4 +6,5 @@ core/__pycache__/
 myenv
 test/
 PKGBUILD
-
+.SRCINFO
+ms-regfx/
