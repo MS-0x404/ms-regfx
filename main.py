@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import sys
 from core.keys import KEYS
 from core.parser import *
