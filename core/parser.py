@@ -82,6 +82,11 @@ def leggi_dati(raw, offset_data, lenght_data, type_data):
         if lenght_data & 0x80000000:
             lunghezza_vera = lenght_data & 0x7FFFFFFF
             raw_bytes = struct.pack("<I", offset_data)[:lunghezza_vera]
+            try:
+                stringhe = raw_bytes.decode("utf-16-le").split("\x00")
+                data = " | ".join(s for s in stringhe if s)
+            except UnicodeDecodeError:
+                data = raw_bytes.hex()
         else:
             data_offset = 4096 + offset_data + 4
             raw_bytes = raw[data_offset : data_offset+lenght_data]
@@ -192,9 +197,10 @@ def decode_shell_item(hex_data):
         name = f"{name} [{timestamp}]" 
     return name
 
-
 def visita_nk(raw, offset, profondita=0, percorso=""):
     nk = leggi_nk(raw, offset)
+    risultato = {"chiave": nk["named"], "valori": [], "sottochiavi": []}
+
     print("  " * profondita + nk["named"])
     if nk["num_valori"][0] > 0 and nk["offset_valori"][0] != 0xFFFFFFFF:
         offset_lista_val = nk["offset_valori"][0] + 4096
@@ -223,13 +229,16 @@ def visita_nk(raw, offset, profondita=0, percorso=""):
                 ft = int.from_bytes(b[8:16], "little")
                 dt = datetime.datetime(1601,1,1) + datetime.timedelta(microseconds=ft//10)
                 dato = f"eseguito {count} volte, ultimo avvio {dt}"
+            risultato["valori"].append({"nome": nome, "dato": dato})
             print("  " * (profondita+1) + f"{nome} = {dato}")
 
     if nk["subkeys"][0] > 0 and nk["offset_keys"][0] != 0xFFFFFFFF:
         offset_lista = nk["offset_keys"][0] + 4096
         subkeys = lista_subkeys(raw, offset_lista)
         for off in subkeys:
-            visita_nk(raw, off + 4096, profondita + 1, percorso + "\\" + nk["named"])
+            figlia = visita_nk(raw, off + 4096, profondita + 1, percorso + "\\" + nk["named"])
+            risultato["sottochiavi"].append(figlia)
+    return risultato
 
 
 def lista_subkeys(raw, offset_lista):
@@ -306,8 +315,7 @@ def cerca_chiave(raw, offset, path, recursive=False, path_origin=""):
     nk = leggi_nk(raw, offset)
     if len(path) == 0:
         if recursive:
-            visita_nk(raw, offset, percorso=path_origin)
-            result = True
+            result = visita_nk(raw, offset, percorso=path_origin)
         else:
             # leggi i valori
             result = stampa_valori(raw, offset, path_origin)
