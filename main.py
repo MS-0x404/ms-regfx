@@ -9,11 +9,11 @@ from outputs.out_json import *
 
 
 HEADER_REGF = 4096
-
+VERSION = "ms-regfx; v0.1.5; @msfire"
 
 def about_help():
     return """
-Registry File Parser - ms-regfx (Help)
+Registry File Parser - Help
 
 Usage:
   python main.py <input_file> <key> [options]
@@ -24,10 +24,11 @@ Arguments:
   <key>          Key to search for in the registry. 
 
 Options:
-  --csv          Output results in CSV format.
-  --json         Output results in JSON format.
+  --csv            Output results in CSV format.
+  --json           Output results in JSON format.
   --recursive, -r  Search recursively in the registry.
-  --help, -h     Show this help message.
+  --help, -h       Show this help message.
+  --version, -v    Show version
 
 Examples:
   python main.py NTUSER.DAT "Software\\Microsoft" --csv
@@ -87,6 +88,9 @@ if __name__ == "__main__":
             sys.exit(1)
     elif "--help" in sys.argv or  "-h" in sys.argv:
         print(about_help())
+        sys.exit(1)
+    elif "--version" in sys.argv or "-v" in sys.argv:
+        print(VERSION)
         sys.exit(1)
     else:
         print("Error: No arguments provided. Use --help to see available options.")

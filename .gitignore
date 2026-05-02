@@ -8,3 +8,4 @@ test/
 PKGBUILD
 .SRCINFO
 ms-regfx/
+report.*
