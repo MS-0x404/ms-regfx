@@ -9,7 +9,7 @@ from outputs.out_json import *
 
 
 HEADER_REGF = 4096
-VERSION = "ms-regfx; v0.1.5; @msfire"
+VERSION = "ms-regfx; v0.1.6; @msfire"
 
 def about_help():
     return """
