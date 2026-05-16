@@ -30,9 +30,37 @@ Options:
   --help, -h       Show this help message.
   --version, -v    Show version
 
+
+Preset Keys (NTUSER.DAT):
+  run              Programs that run at startup
+  userassist       Recently executed programs (ROT-13 encoded)
+  recentdocs       Recently opened documents
+  shellbags        Folder navigation history
+  typedurl         URLs typed in Internet Explorer
+  winlogon         Winlogon settings
+  comdlg32         Open/Save dialog history
+
+Preset Keys (SOFTWARE):
+  muicache         Recently executed programs (MUI cache)
+  installed        Installed programs
+  network          Network profiles
+  version          Windows version and install info
+  windows          Windows system settings
+
+Preset Keys (SYSTEM):
+  usbstor          USB devices history
+  mounted          Mounted devices
+  hostname         Computer name
+  timezone         Timezone information
+  syskey           LSA security settings
+
+Preset Keys (SAM):
+  accounts         User accounts list
+
+
 Examples:
   python main.py NTUSER.DAT "Software\\Microsoft" --csv
-  python main.py SAM "SAM\\Domains" --json
+  regfx SAM "SAM\\Domains" --json
 """
 
 
